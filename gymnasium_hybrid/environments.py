@@ -66,6 +66,7 @@ class BaseEnv(gym.Env):
         seed: Optional[int] = None,
         max_turn: float = np.pi / 2,
         max_acceleration: float = 0.5,
+        max_speed: float = 7.0,
         delta_t: float = 0.005,
         max_step: int = 200,
         penalty: float = 0.001,
@@ -100,13 +101,15 @@ class BaseEnv(gym.Env):
         self.target = None
         self.viewer = None
         self.current_step = None
-        self.agent = BaseAgent(break_value=break_value, delta_t=delta_t)
+        self.agent = BaseAgent(break_value=break_value, delta_t=delta_t, max_speed=max_speed)
 
         parameters_min = np.array([0, -1], dtype=np.float32)
         parameters_max = np.array([1, +1], dtype=np.float32)
 
         self.action_space = spaces.Tuple((spaces.Discrete(3), spaces.Box(parameters_min, parameters_max,dtype=np.float32)))
-        self.observation_space = spaces.Box(-np.ones(10), np.ones(10), dtype=np.float32)
+        low_bound = np.array([-1,-1,0,-1,-1,-1,-1,0,0,0], dtype=np.float32)
+        high_bound = np.array([1,1,max_speed,1,1,1,1,2*np.sqrt(2),1,1], dtype=np.float32)
+        self.observation_space = spaces.Box(low_bound, high_bound, dtype=np.float32)
         dirname = os.path.dirname(__file__)
         self.bg = cv2.imread(os.path.join(dirname, 'bg.jpg'))
         self.bg = cv2.cvtColor(self.bg, cv2.COLOR_BGR2RGB)

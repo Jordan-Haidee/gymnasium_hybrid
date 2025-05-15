@@ -5,12 +5,13 @@ import numpy as np
 
 class BaseAgent:
 
-    def __init__(self, break_value: float, delta_t: float):
+    def __init__(self, break_value: float, delta_t: float, max_speed: float = 7.0):
         self.x = None
         self.y = None
         self.phi = None  # angle of the velocity vector
         self.theta = None  # direction of the agent
         self.speed = None
+        self.max_speed = max_speed
         self.delta_t = delta_t
         self.break_value = break_value
 
@@ -31,6 +32,7 @@ class BaseAgent:
 
     def _step(self) -> None:
         angle = self.theta if self.phi is None else self.phi
+        self.speed = min(self.max_speed, self.speed)
         self.x += self.delta_t * self.speed * np.cos(angle)
         self.y += self.delta_t * self.speed * np.sin(angle)
 
