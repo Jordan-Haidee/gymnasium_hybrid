@@ -419,7 +419,9 @@ class HardMoveEnv(gym.Env):
         self.action_space = spaces.Tuple(
             (spaces.Discrete(int(2 ** self.num_actuators)), spaces.Box(parameters_min, parameters_max,dtype=np.float32))  
         )
-        self.observation_space = spaces.Box(-np.ones(10), np.ones(10), dtype=np.float32)
+        low_bound = np.array([-1,-1,0,-1,-1,-1,-1,0,0,0], dtype=np.float32)
+        high_bound = np.array([1,1,1,1,1,1,1,2*np.sqrt(2),1,1], dtype=np.float32)
+        self.observation_space = spaces.Box(low_bound, high_bound, dtype=np.float32)
 
     def seed(self, seed: Optional[int] = None) -> list:
         self.np_random, seed = seeding.np_random(seed)  # noqa
